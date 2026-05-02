@@ -1,13 +1,21 @@
 'use client'
+import { Icon, IconName } from '@/lib/icons'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, ViewTransition } from 'react'
 
-const navItems = [
-  { icon: '', label: 'Overview', path: '/', color: 'hsl(187,90%,51%)' },
-  { icon: '', label: 'Explore', path: '/explore', color: 'hsl(280,65%,60%)' },
-  { icon: '', label: 'Watchlist', path: '/watchlist', color: 'hsl(38,92%,55%)' },
-  { icon: '', label: 'Markets', path: '/markets', color: 'hsl(160,70%,45%)' }
+interface MenuItem {
+  icon: IconName
+  label: string
+  path: string
+  color: string
+}
+
+const navItems: MenuItem[] = [
+  { icon: 're-up.ph', label: 'Overview', path: '/', color: 'hsl(187,90%,51%)' },
+  { icon: 'arrow-right', label: 'Explore', path: '/explore', color: 'hsl(280,65%,60%)' },
+  { icon: 'cf-pen', label: 'Watchlist', path: '/watchlist', color: 'hsl(38,92%,55%)' },
+  { icon: 'information', label: 'Markets', path: '/markets', color: 'hsl(160,70%,45%)' }
 ]
 
 // Clean upward column — stacked above the FAB, never off-screen
@@ -41,13 +49,13 @@ export const Fab = () => {
       <ViewTransition>
         {open &&
           navItems.map((item, i) => {
-            const Icon = item.icon
             const isActive = pathname === item.path
             const pos = positions[i]
             return (
               <div
                 key={item.path}
                 className='fixed bottom-8 right-8 z-50'
+                style={{ x: pos.x, y: pos.y }}
                 // initial={{ x: 0, y: 0, scale: 0, opacity: 0 }}
                 // animate={{ x: pos.x, y: pos.y, scale: 1, opacity: 1 }}
                 // exit={{ x: 0, y: 0, scale: 0, opacity: 0 }}
@@ -73,7 +81,11 @@ export const Fab = () => {
                       boxShadow: `0 0 0 1px ${item.color}35, 0 4px 16px ${item.color}20`,
                       backdropFilter: 'blur(16px)'
                     }}>
-                    <span className='w-4.5 h-4.5' style={{ color: isActive ? 'hsl(220,20%,4%)' : item.color }} />
+                    <Icon
+                      name={item.icon}
+                      className='size-4'
+                      style={{ color: isActive ? 'hsl(220,20%,4%)' : item.color }}
+                    />
                   </div>
                 </Link>
               </div>
@@ -112,7 +124,7 @@ export const Fab = () => {
               key='menu'
               // initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}
             >
-              <span className='w-5 h-5 text-background' />
+              <Icon name='re-up.ph' className='w-5 h-5' />
             </div>
           )}
         </ViewTransition>

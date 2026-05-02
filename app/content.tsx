@@ -1,32 +1,57 @@
+'use client'
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
 
-export const Content = () => {
+const PixelGrid = dynamic(() => import('three-px-react').then((mod) => mod.PixelGrid), {
+  ssr: false
+})
+
+interface ContentProps {
+  category?: string
+}
+
+function formatCategory(category?: string) {
+  if (!category) {
+    return 'Overview'
+  }
+
+  return category
+    .split('-')
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
+
+export const Content = ({ category }: ContentProps) => {
+  const title = formatCategory(category)
+
   return (
-    <div className='flex flex-col flex-1items-center justify-center font-sans dark:bg-background'>
-      <main className='flex flex-1 space-y-14 w-full max-w-3xl flex-col items-center justify-between bg-white dark:bg-background sm:items-start'>
+    <div className='flex flex-col items-start justify-center'>
+      <main className='flex w-full max-w-3xl flex-1 flex-col items-center justify-between gap-14 bg-background sm:items-start'>
         <div className='flex flex-col gap-4 text-left'>
-          <h1 className='max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50'>
-            Templatest
-          </h1>
-          <p className='max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400'>
+          <div className='flex items-center space-x-4'>
+            <PixelGrid animation='checkerboard' color='#AAAAAA' duration={2000} className='animate-pulse' />
+            <h1 className='max-w-xs font-display font-semibold text-foreground text-xl leading-0'>{title}</h1>
+          </div>
+          <p className='max-w-md text-base leading-6 font-display text-foreground/50'>
             Looking for a starting point for your next web app? Head over to{' '}
-            <a href='https://github.com/phtn/bridge.git' className='font-medium text-zinc-950 dark:text-zinc-50'>
+            <a href='https://github.com/phtn/bridge.git' className='text-foreground'>
               Github (Bridge) Template
             </a>{' '}
             and clone the repo as template.
           </p>
         </div>
-        <div className='flex flex-col gap-4 text-base font-medium sm:flex-row'>
+        <div className='hidden _flex flex-col gap-4 text-base font-medium sm:flex-row'>
           <a
-            className='flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-40'
+            className='flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-foreground/85 md:w-40'
             href='https://bigticket.ph'
             target='_blank'
             rel='noopener noreferrer'>
-            <Image className='dark:invert' src='/vercel.svg' alt='Vercel logomark' width={16} height={16} />
+            <Image className='invert dark:invert-0' src='/vercel.svg' alt='Vercel logomark' width={16} height={16} />
             Projects
           </a>
           <a
-            className='flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/8 px-5 transition-colors hover:border-transparent hover:bg-black/4 dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]'
+            className='flex h-12 w-full items-center justify-center rounded-full border border-border px-5 text-foreground transition-colors hover:border-transparent hover:bg-foreground/5 md:w-40'
             href='https://launch-day-pied.vercel.app/'
             target='_blank'
             rel='noopener noreferrer'>

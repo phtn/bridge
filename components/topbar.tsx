@@ -1,11 +1,18 @@
 'use client'
+import { useTheme } from '@/components/theme-provider'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { SubmitEvent, useState, ViewTransition } from 'react'
+
+const PixelGrid = dynamic(() => import('three-px-react').then((mod) => mod.PixelGrid), {
+  ssr: false
+})
 
 export const TopBar = () => {
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const navigate = useRouter()
+  const { resolvedTheme } = useTheme()
 
   const handleSearch = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -17,15 +24,15 @@ export const TopBar = () => {
   }
 
   return (
-    <header className='h-16 border-b-[0.5px] border-dotted border-neutral-500/30 flex items-center px-8 bg-background sticky top-0 z-40'>
-      <div className='flex items-center justify-between w-full'>
-        <h2 className='font-mono'>05-2026</h2>
-        <h3 className='font-mono text-slate-300/50 text-sm'>
+    <header className='sticky top-0 z-40 flex h-16 items-center gap-4 border-b-[0.5px] border-dotted border-border px-4 sm:gap-8 sm:px-8'>
+      <div className='flex min-w-0 flex-1 items-center justify-between gap-4'>
+        <h2 className='font-display text-sm tracking-wider'>Template-05-2026</h2>
+        <h3 className='font-display hidden text-sm text-foreground md:block'>
           {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
         </h3>
       </div>
 
-      <div className='flex items-center justify-between'>
+      <div className='flex items-center gap-3 sm:gap-4'>
         <ViewTransition>
           {searchOpen && (
             <form
@@ -40,7 +47,7 @@ export const TopBar = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder='Search symbol (e.g. AAPL)...'
-                className='h-9 bg-muted/50 border-border/50 text-sm font-mono placeholder:text-muted-foreground/50'
+                className='h-9 rounded-full border border-border/60 bg-muted/60 px-4 text-sm font-mono text-foreground outline-none placeholder:text-muted-foreground/50 focus:ring-1 focus:ring-ring'
                 onBlur={() => {
                   if (!query) setSearchOpen(false)
                 }}
@@ -49,11 +56,9 @@ export const TopBar = () => {
           )}
         </ViewTransition>
 
-        <button
-          onClick={() => setSearchOpen(!searchOpen)}
-          className='w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors'></button>
-
-        <div className='hidden md:flex w-7 items-center justify-center bg-slate-400/5 font-bold'>/</div>
+        <div className='hidden sm:block'>
+          <PixelGrid animation='snake' color={resolvedTheme === 'dark' ? '#f5f5f5' : '#CCC'} duration={1000} />
+        </div>
       </div>
     </header>
   )
